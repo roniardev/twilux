@@ -4,22 +4,24 @@ import (
 	"time"
 	"twilux/business/users"
 
+	"github.com/jkomyno/nanoid"
 	"gorm.io/gorm"
 )
 
 type User struct {
-	Id        uint `gorm:"primaryKey"`
+	Id        string `gorm:"primaryKey;size:10"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
-	Username  string
-	Email     string
-	Password  string
+	Username  string         `gorm:"size:20;not null;unique"`
+	Email     string         `gorm:"not null;unique"`
+	Password  string         `gorm:"not null"`
 }
 
 func (user User) ToDomain() users.Domain {
+	val, _ := nanoid.Nanoid(10)
 	return users.Domain{
-		Id:        user.Id,
+		Id:        val,
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 		DeletedAt: user.DeletedAt,

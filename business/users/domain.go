@@ -2,15 +2,20 @@ package users
 
 import (
 	"context"
-	"twilux/helpers/models"
+	"time"
+
+	"gorm.io/gorm"
 )
 
 type Domain struct {
-	models.Base
-	Email    string
-	Username string
-	Password string
-	Token    string
+	Id        string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt
+	Email     string
+	Username  string
+	Password  string
+	Token     string
 }
 
 type UserUsecaseInterface interface {
