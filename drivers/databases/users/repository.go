@@ -29,3 +29,14 @@ func (repo *UserRepository) Login(domain users.Domain, ctx context.Context) (use
 func (repo *UserRepository) GetAllUsers(ctx context.Context) ([]users.Domain, error) {
 	return []users.Domain{}, nil
 }
+
+// SignUp creates a new user
+func (repo *UserRepository) SignUp(domain users.Domain, ctx context.Context) (users.Domain, error) {
+	userDb := FromDomain(domain)
+
+	err := repo.db.Create(&userDb).Error
+	if err != nil {
+		return users.Domain{}, err
+	}
+	return userDb.ToDomain(), nil
+}

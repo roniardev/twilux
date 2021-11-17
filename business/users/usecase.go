@@ -35,3 +35,22 @@ func (usecase *UserUseCase) Login(domain Domain, ctx context.Context) (Domain, e
 func (usecase *UserUseCase) GetAllUsers(ctx context.Context) ([]Domain, error) {
 	return []Domain{}, nil
 }
+
+// Signup usecase for user
+func (usecase *UserUseCase) SignUp(domain Domain, ctx context.Context) (Domain, error) {
+	if domain.Email == "" {
+		return Domain{}, errors.New("email Empty")
+	}
+	if domain.Password == "" {
+		return Domain{}, errors.New("password Empty")
+	}
+	if domain.Username == "" {
+		return Domain{}, errors.New("name Empty")
+	}
+
+	user, err := usecase.repo.SignUp(domain, ctx)
+	if err != nil {
+		return Domain{}, err
+	}
+	return user, nil
+}
