@@ -2,15 +2,20 @@ package snippets
 
 import (
 	"context"
-	"twilux/helpers/models"
+	"time"
+
+	"gorm.io/gorm"
 )
 
 type Domain struct {
-	models.Base
-	Title    string `json:"title"`
-	Descb    string `json:"description"`
-	Snippet  string `json:"snippet"`
-	Username string `json:"username"`
+	Id        string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt
+	Title     string `json:"title"`
+	Descb     string `json:"description"`
+	Snippet   string `json:"snippet"`
+	Username  string `json:"username"`
 }
 
 type SnippetUsecaseInterface interface {

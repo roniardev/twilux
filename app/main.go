@@ -7,6 +7,8 @@ import (
 	userUsecase "twilux/business/users"
 	userController "twilux/controllers/users"
 	userRepo "twilux/drivers/databases/users"
+
+	snippetRepo "twilux/drivers/databases/snippets"
 	"twilux/drivers/mysql"
 
 	"github.com/labstack/echo/v4"
@@ -29,6 +31,7 @@ func init() {
 
 func dbMigrate(db *gorm.DB) {
 	db.AutoMigrate(&userRepo.User{})
+	db.AutoMigrate(&snippetRepo.Snippet{})
 }
 
 func main() {
