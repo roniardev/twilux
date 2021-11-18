@@ -9,7 +9,7 @@ import (
 )
 
 type User struct {
-	Id        string `gorm:"primaryKey;size:10"`
+	Id        string `gorm:"primaryKey;not null"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -19,9 +19,8 @@ type User struct {
 }
 
 func (user User) ToDomain() users.Domain {
-	val, _ := nanoid.Nanoid(10)
 	return users.Domain{
-		Id:        val,
+		Id:        user.Id,
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 		DeletedAt: user.DeletedAt,
@@ -32,8 +31,10 @@ func (user User) ToDomain() users.Domain {
 }
 
 func FromDomain(domain users.Domain) User {
+	val, _ := nanoid.Nanoid(10)
+
 	return User{
-		Id:        domain.Id,
+		Id:        val,
 		CreatedAt: domain.CreatedAt,
 		UpdatedAt: domain.UpdatedAt,
 		DeletedAt: domain.DeletedAt,

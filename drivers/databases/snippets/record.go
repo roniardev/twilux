@@ -20,9 +20,8 @@ type Snippet struct {
 }
 
 func (snippet Snippet) ToDomain() snippets.Domain {
-	val, _ := nanoid.Nanoid(10)
 	return snippets.Domain{
-		Id:        val,
+		Id:        snippet.Id,
 		CreatedAt: snippet.CreatedAt,
 		UpdatedAt: snippet.UpdatedAt,
 		DeletedAt: snippet.DeletedAt,
@@ -34,8 +33,9 @@ func (snippet Snippet) ToDomain() snippets.Domain {
 }
 
 func FromDomain(domain snippets.Domain) Snippet {
+	val, _ := nanoid.Nanoid(10)
 	return Snippet{
-		Id:        domain.Id,
+		Id:        val,
 		CreatedAt: domain.CreatedAt,
 		UpdatedAt: domain.UpdatedAt,
 		DeletedAt: domain.DeletedAt,
