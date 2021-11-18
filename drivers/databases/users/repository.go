@@ -31,7 +31,7 @@ func (repo *UserRepository) GetAllUsers(ctx context.Context) ([]users.Domain, er
 }
 
 // SignUp creates a new user
-func (repo *UserRepository) SignUp(domain users.Domain, ctx context.Context) (users.Domain, error) {
+func (repo *UserRepository) Register(domain users.Domain, ctx context.Context) (users.Domain, error) {
 	userDb := FromDomain(domain)
 
 	err := repo.db.Create(&userDb).Error

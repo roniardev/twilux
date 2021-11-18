@@ -3,6 +3,7 @@ package users
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 )
 
@@ -20,10 +21,11 @@ func NewUsecase(userRepo UserRepoInterface, contextTimeout time.Duration) UserUs
 
 func (usecase *UserUseCase) Login(domain Domain, ctx context.Context) (Domain, error) {
 	if domain.Email == "" {
-		return Domain{}, errors.New("email Empty")
+		fmt.Println("email Empty")
+		return Domain{}, errors.New("email required")
 	}
 	if domain.Password == "" {
-		return Domain{}, errors.New("password Empty")
+		return Domain{}, errors.New("password required")
 	}
 	user, err := usecase.repo.Login(domain, ctx)
 	if err != nil {
@@ -37,7 +39,7 @@ func (usecase *UserUseCase) GetAllUsers(ctx context.Context) ([]Domain, error) {
 }
 
 // Signup usecase for user
-func (usecase *UserUseCase) SignUp(domain Domain, ctx context.Context) (Domain, error) {
+func (usecase *UserUseCase) Register(domain Domain, ctx context.Context) (Domain, error) {
 	if domain.Email == "" {
 		return Domain{}, errors.New("email Empty")
 	}
@@ -48,7 +50,7 @@ func (usecase *UserUseCase) SignUp(domain Domain, ctx context.Context) (Domain, 
 		return Domain{}, errors.New("name Empty")
 	}
 
-	user, err := usecase.repo.SignUp(domain, ctx)
+	user, err := usecase.repo.Register(domain, ctx)
 	if err != nil {
 		return Domain{}, err
 	}
