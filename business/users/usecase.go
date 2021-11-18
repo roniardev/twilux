@@ -41,13 +41,13 @@ func (usecase *UserUseCase) GetAllUsers(ctx context.Context) ([]Domain, error) {
 // Signup usecase for user
 func (usecase *UserUseCase) Register(domain Domain, ctx context.Context) (Domain, error) {
 	if domain.Email == "" {
-		return Domain{}, errors.New("email Empty")
+		return Domain{}, errors.New("email required")
 	}
 	if domain.Password == "" {
-		return Domain{}, errors.New("password Empty")
+		return Domain{}, errors.New("password required")
 	}
 	if domain.Username == "" {
-		return Domain{}, errors.New("name Empty")
+		return Domain{}, errors.New("username required")
 	}
 
 	user, err := usecase.repo.Register(domain, ctx)

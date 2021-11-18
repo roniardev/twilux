@@ -40,11 +40,15 @@ func (controller *UserController) Login(c echo.Context) error {
 func (controller *UserController) Register(c echo.Context) error {
 	ctx := c.Request().Context()
 	var userRegister request.UserRegister
-	err := c.Bind(&userRegister)
+	errs := c.Bind(&userRegister)
+	if errs != nil {
+		fmt.Println(errs)
+		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", errs)
+	}
+	user, err := controller.usecase.Register(*userRegister.ToDomain(), ctx)
 	if err != nil {
 		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
 	}
-	user, err := controller.usecase.Register(*userRegister.ToDomain(), ctx)
 	return controllers.SuccessResponse(c, response.FromDomain(user))
 }
 
