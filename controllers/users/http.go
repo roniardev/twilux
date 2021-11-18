@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"twilux/business/users"
 	"twilux/controllers"
@@ -23,11 +24,27 @@ func NewUserController(uc users.UserUsecaseInterface) *UserController {
 func (controller *UserController) Login(c echo.Context) error {
 	ctx := c.Request().Context()
 	var userLogin request.UserLogin
-	err := c.Bind(&userLogin)
+	errs := c.Bind(&userLogin)
+	if errs != nil {
+		fmt.Println(errs)
+		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", errs)
+	}
+	user, err := controller.usecase.Login(*userLogin.ToDomain(), ctx)
 	if err != nil {
 		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
 	}
-	user, err := controller.usecase.Login(*userLogin.ToDomain(), ctx)
+	return controllers.SuccessResponse(c, response.FromDomain(user))
+}
+
+// SignUp controller
+func (controller *UserController) Register(c echo.Context) error {
+	ctx := c.Request().Context()
+	var userRegister request.UserRegister
+	err := c.Bind(&userRegister)
+	if err != nil {
+		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
+	}
+	user, err := controller.usecase.Register(*userRegister.ToDomain(), ctx)
 	return controllers.SuccessResponse(c, response.FromDomain(user))
 }
 
