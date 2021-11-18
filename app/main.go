@@ -8,6 +8,8 @@ import (
 	userController "twilux/controllers/users"
 	userRepo "twilux/drivers/databases/users"
 
+	snippetUsecase "twilux/business/snippets"
+	snippetController "twilux/controllers/snippets"
 	snippetRepo "twilux/drivers/databases/snippets"
 	"twilux/drivers/mysql"
 
@@ -53,8 +55,13 @@ func main() {
 	userUseCaseInterface := userUsecase.NewUsecase(userRepoInterface, timeoutContext)
 	userControllerInterface := userController.NewUserController(userUseCaseInterface)
 
+	snippetRepoInterface := snippetRepo.NewSnippetRepository(db)
+	snippetUseCaseInterface := snippetUsecase.NewUsecase(snippetRepoInterface, timeoutContext)
+	snippetControllerInterface := snippetController.NewSnippetController(snippetUseCaseInterface)
+
 	routesInit := routes.RouteControllerList{
-		UserController: *userControllerInterface,
+		UserController:    *userControllerInterface,
+		SnippetController: *snippetControllerInterface,
 	}
 
 	routesInit.RouteRegister(e)

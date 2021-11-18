@@ -11,14 +11,14 @@ type SnippetUseCase struct {
 	ctx  time.Duration
 }
 
-func NewUsecase(snippetRepo SnippetRepoInterface, ctx time.Duration) *SnippetUseCase {
+func NewUsecase(snippetRepo SnippetRepoInterface, contextTimeout time.Duration) SnippetUsecaseInterface {
 	return &SnippetUseCase{
 		repo: snippetRepo,
-		ctx:  ctx,
+		ctx:  contextTimeout,
 	}
 }
 
-func (usecase *SnippetUseCase) Create(ctx context.Context, domain Domain) (Domain, error) {
+func (usecase *SnippetUseCase) Create(domain Domain, ctx context.Context) (Domain, error) {
 	if domain.Title == "" {
 		return Domain{}, errors.New("title is required")
 	}
