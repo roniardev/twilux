@@ -5,17 +5,20 @@ import (
 	"errors"
 	"fmt"
 	"time"
+	"twilux/middlewares"
 )
 
 type UserUseCase struct {
-	repo UserRepoInterface
-	ctx  time.Duration
+	ConfigJWT middlewares.ConfigJWT
+	repo      UserRepoInterface
+	ctx       time.Duration
 }
 
-func NewUsecase(userRepo UserRepoInterface, contextTimeout time.Duration) UserUsecaseInterface {
+func NewUsecase(configJWT middlewares.ConfigJWT, userRepo UserRepoInterface, contextTimeout time.Duration) UserUsecaseInterface {
 	return &UserUseCase{
-		repo: userRepo,
-		ctx:  contextTimeout,
+		ConfigJWT: configJWT,
+		repo:      userRepo,
+		ctx:       contextTimeout,
 	}
 }
 
@@ -28,6 +31,11 @@ func (usecase *UserUseCase) Login(domain Domain, ctx context.Context) (Domain, e
 		return Domain{}, errors.New("password required")
 	}
 	user, err := usecase.repo.Login(domain, ctx)
+	if err != nil {
+		return Domain{}, err
+	}
+
+	user.Token, err = usecase.ConfigJWT.GenerateToken(user.Id)
 	if err != nil {
 		return Domain{}, err
 	}

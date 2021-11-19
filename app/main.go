@@ -4,6 +4,8 @@ import (
 	"log"
 	"time"
 	"twilux/app/routes"
+	"twilux/middlewares"
+
 	userUsecase "twilux/business/users"
 	userController "twilux/controllers/users"
 	userRepo "twilux/drivers/databases/users"
@@ -45,6 +47,11 @@ func main() {
 		DB_Database: viper.GetString(`database.name`),
 	}
 
+	configJWT := middlewares.ConfigJWT{
+		SecretJWT:       viper.GetString(`jwt.secret`),
+		ExpiresDuration: viper.GetInt(`jwt.expired`),
+	}
+
 	db := configDb.InitialDb()
 	dbMigrate(db)
 
@@ -53,7 +60,7 @@ func main() {
 	e := echo.New()
 
 	userRepoInterface := userRepo.NewUserRepository(db)
-	userUseCaseInterface := userUsecase.NewUsecase(userRepoInterface, timeoutContext)
+	userUseCaseInterface := userUsecase.NewUsecase(configJWT, userRepoInterface, timeoutContext)
 	userControllerInterface := userController.NewUserController(userUseCaseInterface)
 
 	snippetRepoInterface := snippetRepo.NewSnippetRepository(db)
@@ -61,6 +68,7 @@ func main() {
 	snippetControllerInterface := snippetController.NewSnippetController(snippetUseCaseInterface)
 
 	routesInit := routes.RouteControllerList{
+		JwtConfig:         configJWT.Init(),
 		UserController:    *userControllerInterface,
 		SnippetController: *snippetControllerInterface,
 	}

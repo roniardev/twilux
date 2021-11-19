@@ -9,12 +9,12 @@ import (
 )
 
 type RouteControllerList struct {
+	JwtConfig         middleware.JWTConfig
 	UserController    userController.UserController
 	SnippetController snippetController.SnippetController
 }
 
 func (controller RouteControllerList) RouteRegister(c *echo.Echo) {
-	c.Pre(middleware.AddTrailingSlash())
 	c.Use(middleware.Logger())
 	users := c.Group("/user")
 	users.POST("/login", controller.UserController.Login)
@@ -22,6 +22,6 @@ func (controller RouteControllerList) RouteRegister(c *echo.Echo) {
 
 	snippet := c.Group("/snippets")
 	snippet.GET("/", controller.SnippetController.GetAll)
-	snippet.POST("/", controller.SnippetController.Create)
+	snippet.POST("/", controller.SnippetController.Create, middleware.JWTWithConfig(controller.JwtConfig))
 
 }
