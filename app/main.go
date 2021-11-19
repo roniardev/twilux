@@ -51,6 +51,7 @@ func main() {
 	timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
 
 	e := echo.New()
+
 	userRepoInterface := userRepo.NewUserRepository(db)
 	userUseCaseInterface := userUsecase.NewUsecase(userRepoInterface, timeoutContext)
 	userControllerInterface := userController.NewUserController(userUseCaseInterface)

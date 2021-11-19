@@ -5,6 +5,7 @@ import (
 	userController "twilux/controllers/users"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type RouteControllerList struct {
@@ -13,6 +14,8 @@ type RouteControllerList struct {
 }
 
 func (controller RouteControllerList) RouteRegister(c *echo.Echo) {
+	c.Pre(middleware.AddTrailingSlash())
+	c.Use(middleware.Logger())
 	users := c.Group("/user")
 	users.POST("/login", controller.UserController.Login)
 	users.POST("/register", controller.UserController.Register)
