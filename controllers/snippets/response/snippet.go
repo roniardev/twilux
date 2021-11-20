@@ -1,6 +1,7 @@
 package response
 
 import (
+	"fmt"
 	"time"
 	"twilux/business/snippets"
 
@@ -29,4 +30,12 @@ func FromDomain(domain snippets.Domain) SnippetResponse {
 		Descb:     domain.Descb,
 		Username:  domain.Username,
 	}
+}
+
+func ToListDomain(domain []snippets.Domain) (response []SnippetResponse) {
+	fmt.Println(domain)
+	for _, snippet := range domain {
+		response = append(response, FromDomain(snippet))
+	}
+	return response
 }

@@ -2,6 +2,7 @@ package snippets
 
 import (
 	"context"
+	"fmt"
 	"twilux/business/snippets"
 
 	"gorm.io/gorm"
@@ -16,7 +17,15 @@ func NewSnippetRepository(db *gorm.DB) *SnippetRepository {
 }
 
 func (repo *SnippetRepository) GetAll(ctx context.Context) ([]snippets.Domain, error) {
-	return []snippets.Domain{}, nil
+	snipp := []Snippet{}
+	result := repo.db.Find(&snipp)
+	if result.Error != nil {
+		return []snippets.Domain{}, result.Error
+	}
+	fmt.Println("GetAll Repo db")
+	fmt.Println(result)
+	return ToListDomain(snipp), nil
+
 }
 
 func (repo *SnippetRepository) Create(domain snippets.Domain, ctx context.Context) (snippets.Domain, error) {

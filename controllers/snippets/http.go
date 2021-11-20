@@ -21,7 +21,13 @@ func NewSnippetController(uc snippets.SnippetUsecaseInterface) *SnippetControlle
 }
 
 func (controller *SnippetController) GetAll(c echo.Context) error {
-	return controllers.SuccessResponse(c, response.SnippetResponse{})
+	ctx := c.Request().Context()
+	snippet, err := controller.usecase.GetAll(ctx)
+	if err != nil {
+		return controllers.SuccessResponse(c, response.ToListDomain(snippet))
+	}
+
+	return controllers.SuccessResponse(c, response.ToListDomain(snippet))
 }
 
 func (controller *SnippetController) Create(c echo.Context) error {

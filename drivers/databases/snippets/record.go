@@ -1,6 +1,7 @@
 package snippets
 
 import (
+	"fmt"
 	"time"
 	"twilux/business/snippets"
 
@@ -44,4 +45,14 @@ func FromDomain(domain snippets.Domain) Snippet {
 		Snippet:   domain.Snippet,
 		Username:  domain.Username,
 	}
+}
+
+func ToListDomain(data []Snippet) (result []snippets.Domain) {
+	result = []snippets.Domain{}
+	fmt.Println("ToListDOmain db/snippets/record")
+	fmt.Println(result)
+	for _, snippet := range data {
+		result = append(result, snippet.ToDomain())
+	}
+	return result
 }

@@ -37,7 +37,7 @@ func (usecase *SnippetUseCase) GetAll(ctx context.Context) ([]Domain, error) {
 	snippets, error := usecase.repo.GetAll(ctx)
 
 	if error != nil {
-		return nil, error
+		return []Domain{}, error
 	}
 	return snippets, nil
 }

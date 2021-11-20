@@ -19,10 +19,10 @@ type Domain struct {
 }
 
 type SnippetUsecaseInterface interface {
-	Create(domain Domain, ctx context.Context) (Domain, error)
 	GetAll(ctx context.Context) ([]Domain, error)
+	Create(domain Domain, ctx context.Context) (Domain, error)
 }
 type SnippetRepoInterface interface {
-	Create(domain Domain, ctx context.Context) (Domain, error)
 	GetAll(ctx context.Context) ([]Domain, error)
+	Create(domain Domain, ctx context.Context) (Domain, error)
 }
