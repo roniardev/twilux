@@ -5,7 +5,6 @@ import (
 	"time"
 	"twilux/business/snippets"
 
-	"github.com/jkomyno/nanoid"
 	"gorm.io/gorm"
 )
 
@@ -34,9 +33,8 @@ func (snippet Snippet) ToDomain() snippets.Domain {
 }
 
 func FromDomain(domain snippets.Domain) Snippet {
-	val, _ := nanoid.Nanoid(10)
 	return Snippet{
-		Id:        val,
+		Id:        domain.Id,
 		CreatedAt: domain.CreatedAt,
 		UpdatedAt: domain.UpdatedAt,
 		DeletedAt: domain.DeletedAt,

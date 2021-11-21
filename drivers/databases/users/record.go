@@ -4,7 +4,6 @@ import (
 	"time"
 	"twilux/business/users"
 
-	"github.com/jkomyno/nanoid"
 	"gorm.io/gorm"
 )
 
@@ -31,10 +30,8 @@ func (user User) ToDomain() users.Domain {
 }
 
 func FromDomain(domain users.Domain) User {
-	val, _ := nanoid.Nanoid(10)
-
 	return User{
-		Id:        val,
+		Id:        domain.Id,
 		CreatedAt: domain.CreatedAt,
 		UpdatedAt: domain.UpdatedAt,
 		DeletedAt: domain.DeletedAt,

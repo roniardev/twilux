@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"twilux/business/snippets"
 
+	"github.com/jkomyno/nanoid"
 	"gorm.io/gorm"
 )
 
@@ -30,6 +31,7 @@ func (repo *SnippetRepository) GetAll(ctx context.Context) ([]snippets.Domain, e
 
 func (repo *SnippetRepository) Create(domain snippets.Domain, ctx context.Context) (snippets.Domain, error) {
 	snippetDb := FromDomain(domain)
+	snippetDb.Id, _ = nanoid.Nanoid(10)
 
 	err := repo.db.Create(&snippetDb).Error
 	if err != nil {
