@@ -6,6 +6,7 @@ import (
 	"twilux/controllers"
 	"twilux/controllers/snippets/request"
 	"twilux/controllers/snippets/response"
+	"twilux/middlewares"
 
 	"github.com/labstack/echo/v4"
 )
@@ -33,6 +34,9 @@ func (controller *SnippetController) GetAll(c echo.Context) error {
 func (controller *SnippetController) Create(c echo.Context) error {
 	ctx := c.Request().Context()
 	var snippetCreate request.SnippetCreate
+	userId := middlewares.GetUser(c)
+	snippetCreate.Username = userId.Username
+
 	errs := c.Bind(&snippetCreate)
 	if errs != nil {
 		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", errs)
