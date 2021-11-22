@@ -3,12 +3,13 @@ package middlewares
 import (
 	"time"
 
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt"
+	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 type JwtMyClaims struct {
-	Username string
+	Username string `json:"username"`
 	jwt.StandardClaims
 }
 
@@ -37,4 +38,10 @@ func (jwtConf *ConfigJWT) GenerateToken(Username string) (string, error) {
 	token, err := t.SignedString([]byte(jwtConf.SecretJWT))
 
 	return token, err
+}
+
+func GetUser(c echo.Context) *JwtMyClaims {
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*JwtMyClaims)
+	return claims
 }

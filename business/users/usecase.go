@@ -35,7 +35,8 @@ func (usecase *UserUseCase) Login(domain Domain, ctx context.Context) (Domain, e
 		return Domain{}, err
 	}
 
-	user.Token, err = usecase.ConfigJWT.GenerateToken(user.Id)
+	user.Token, err = usecase.ConfigJWT.GenerateToken(user.Username)
+	fmt.Println(user.Username)
 	if err != nil {
 		return Domain{}, err
 	}
