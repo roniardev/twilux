@@ -43,3 +43,22 @@ func (controller *SnippetController) Create(c echo.Context) error {
 	}
 	return controllers.SuccessResponse(c, response.FromDomain(snippet))
 }
+
+// Update snippet controller
+func (controller *SnippetController) Update(c echo.Context) error {
+	snippReq := request.SnippetUpdate{}
+	ctx := c.Request().Context()
+	id := c.Param("id")
+
+	if err := c.Bind(&snippReq); err != nil {
+		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
+	}
+	snippetDomain := snippReq.ToUpdateDomain()
+	snippetDomain.Id = id
+
+	_, err := controller.usecase.Update(*snippetDomain, ctx)
+	if err != nil {
+		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
+	}
+	return controllers.SuccessResponse(c, response.FromDomain(*snippetDomain))
+}

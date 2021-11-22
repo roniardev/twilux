@@ -7,6 +7,7 @@ import (
 
 	"github.com/jkomyno/nanoid"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type SnippetRepository struct {
@@ -37,5 +38,20 @@ func (repo *SnippetRepository) Create(domain snippets.Domain, ctx context.Contex
 	if err != nil {
 		return snippets.Domain{}, err
 	}
+	errs := repo.db.Preload(clause.Associations).Preload("Snippet."+clause.Associations).First(&snippetDb, snippetDb).Error
+	if errs != nil {
+		return snippetDb.ToDomain(), nil
+	}
+	return snippetDb.ToDomain(), nil
+}
+
+// Update specific snippet by id
+func (repo *SnippetRepository) Update(domain snippets.Domain, ctx context.Context) (snippets.Domain, error) {
+	snippetDb := FromDomain(domain)
+	res := repo.db.Updates(&snippetDb)
+	if res.Error != nil {
+		return snippets.Domain{}, res.Error
+	}
+
 	return snippetDb.ToDomain(), nil
 }

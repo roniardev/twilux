@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 	"twilux/business/snippets"
+	"twilux/business/users"
 
 	"gorm.io/gorm"
 )
@@ -15,8 +16,9 @@ type Snippet struct {
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 	Title     string         `gorm:"size:50;not null"`
 	Descb     string
-	Snippet   string `gorm:"not null"`
-	Username  string `gorm:"not null;size:20;index"`
+	Snippet   string       `gorm:"not null"`
+	Username  string       `gorm:"not null;size:20;index"`
+	UserInfo  users.Domain `gorm:"foreignKey:Username;references:username"`
 }
 
 func (snippet Snippet) ToDomain() snippets.Domain {
@@ -29,6 +31,7 @@ func (snippet Snippet) ToDomain() snippets.Domain {
 		Descb:     snippet.Descb,
 		Snippet:   snippet.Snippet,
 		Username:  snippet.Username,
+		UserInfo:  snippet.UserInfo,
 	}
 }
 
