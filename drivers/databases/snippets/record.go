@@ -31,7 +31,6 @@ func (snippet Snippet) ToDomain() snippets.Domain {
 		Descb:     snippet.Descb,
 		Snippet:   snippet.Snippet,
 		Username:  snippet.Username,
-		UserInfo:  snippet.UserInfo,
 	}
 }
 

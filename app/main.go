@@ -13,6 +13,11 @@ import (
 	snippetUsecase "twilux/business/snippets"
 	snippetController "twilux/controllers/snippets"
 	snippetRepo "twilux/drivers/databases/snippets"
+
+	savedUsecase "twilux/business/saved"
+	savedController "twilux/controllers/saved"
+	savedRepo "twilux/drivers/databases/saved"
+
 	"twilux/drivers/mysql"
 
 	"github.com/labstack/echo/v4"
@@ -36,6 +41,7 @@ func init() {
 func dbMigrate(db *gorm.DB) {
 	db.AutoMigrate(&userRepo.User{})
 	db.AutoMigrate(&snippetRepo.Snippet{})
+	db.AutoMigrate(&savedRepo.Saved{})
 }
 
 func main() {
@@ -67,10 +73,15 @@ func main() {
 	snippetUseCaseInterface := snippetUsecase.NewUsecase(snippetRepoInterface, timeoutContext)
 	snippetControllerInterface := snippetController.NewSnippetController(snippetUseCaseInterface)
 
+	savedRepoInterface := savedRepo.NewSavedRepository(db)
+	savedUseCaseInterface := savedUsecase.NewUsecase(savedRepoInterface, timeoutContext)
+	savedControllerInterface := savedController.NewSavedController(savedUseCaseInterface)
+
 	routesInit := routes.RouteControllerList{
 		JwtConfig:         configJWT.Init(),
 		UserController:    *userControllerInterface,
 		SnippetController: *snippetControllerInterface,
+		SavedController:   *savedControllerInterface,
 	}
 
 	routesInit.RouteRegister(e)
