@@ -55,3 +55,14 @@ func (repo *SnippetRepository) Update(domain snippets.Domain, ctx context.Contex
 
 	return snippetDb.ToDomain(), nil
 }
+
+// Update deleted_at field to specific snippet by id
+func (repo *SnippetRepository) Delete(domain snippets.Domain, ctx context.Context) (snippets.Domain, error) {
+	snippetDb := FromDomain(domain)
+	res := repo.db.Where("username = ?", snippetDb.Username).Delete(&snippetDb)
+	if res.Error != nil {
+		return snippets.Domain{}, res.Error
+	}
+
+	return snippetDb.ToDomain(), nil
+}

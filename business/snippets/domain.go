@@ -24,9 +24,11 @@ type SnippetUsecaseInterface interface {
 	GetAll(ctx context.Context) ([]Domain, error)
 	Create(domain Domain, ctx context.Context) (Domain, error)
 	Update(domain Domain, ctx context.Context) (Domain, error)
+	Delete(domain Domain, ctx context.Context) (Domain, error)
 }
 type SnippetRepoInterface interface {
 	GetAll(ctx context.Context) ([]Domain, error)
 	Create(domain Domain, ctx context.Context) (Domain, error)
 	Update(domain Domain, ctx context.Context) (Domain, error)
+	Delete(domain Domain, ctx context.Context) (Domain, error)
 }

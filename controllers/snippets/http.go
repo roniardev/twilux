@@ -66,3 +66,24 @@ func (controller *SnippetController) Update(c echo.Context) error {
 	}
 	return controllers.SuccessResponse(c, response.FromDomain(*snippetDomain))
 }
+
+// Delete snippet controller
+
+func (controller *SnippetController) Delete(c echo.Context) error {
+	snippReq := request.SnippetDelete{}
+	ctx := c.Request().Context()
+
+	userId := middlewares.GetUser(c)
+
+	if err := c.Bind(&snippReq); err != nil {
+		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
+	}
+	snippetDomain := snippReq.ToDeleteDomain()
+	snippetDomain.Username = userId.Username
+
+	_, err := controller.usecase.Delete(*snippetDomain, ctx)
+	if err != nil {
+		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
+	}
+	return controllers.SuccessResponse(c, response.FromDomain(*snippetDomain))
+}

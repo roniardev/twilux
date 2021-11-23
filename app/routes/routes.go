@@ -24,4 +24,5 @@ func (controller RouteControllerList) RouteRegister(c *echo.Echo) {
 	snippet.GET("/", controller.SnippetController.GetAll)
 	snippet.POST("/", controller.SnippetController.Create, middleware.JWTWithConfig(controller.JwtConfig))
 	snippet.PUT("/:id", controller.SnippetController.Update, middleware.JWTWithConfig(controller.JwtConfig))
+	snippet.DELETE("/", controller.SnippetController.Delete, middleware.JWTWithConfig(controller.JwtConfig))
 }

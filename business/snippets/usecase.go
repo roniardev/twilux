@@ -57,3 +57,17 @@ func (usecase *SnippetUseCase) Update(domain Domain, ctx context.Context) (Domai
 	}
 	return snippet, nil
 }
+
+// Delete Snippet
+func (usecase *SnippetUseCase) Delete(domain Domain, ctx context.Context) (Domain, error) {
+	if domain.Id == "" {
+		return Domain{}, errors.New("id is required")
+	}
+
+	snippet, error := usecase.repo.Delete(domain, ctx)
+
+	if error != nil {
+		return Domain{}, error
+	}
+	return snippet, nil
+}
