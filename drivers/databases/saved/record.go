@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 	"twilux/business/saved"
+	"twilux/drivers/databases/snippets"
 
 	"gorm.io/gorm"
 )
@@ -12,9 +13,10 @@ type Saved struct {
 	Id        string `gorm:"primaryKey;size:10"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
-	SnippetId string         `gorm:"not null;size:10;index"`
-	Username  string         `gorm:"not null;size:20;index"`
+	DeletedAt gorm.DeletedAt   `gorm:"index"`
+	SnippetId string           `gorm:"not null;size:10;index"`
+	Snippet   snippets.Snippet `gorm:"foreignkey:SnippetId"`
+	Username  string           `gorm:"not null;size:20;index"`
 }
 
 func (sav Saved) ToDomain() saved.Domain {
@@ -24,6 +26,7 @@ func (sav Saved) ToDomain() saved.Domain {
 		UpdatedAt: sav.UpdatedAt,
 		DeletedAt: sav.DeletedAt,
 		SnippetId: sav.SnippetId,
+		Snippet:   sav.Snippet.ToDomain(),
 		Username:  sav.Username,
 	}
 }
@@ -35,6 +38,7 @@ func FromDomain(domain saved.Domain) Saved {
 		UpdatedAt: domain.UpdatedAt,
 		DeletedAt: domain.DeletedAt,
 		SnippetId: domain.SnippetId,
+		Snippet:   snippets.FromDomain(domain.Snippet),
 		Username:  domain.Username,
 	}
 }

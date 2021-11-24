@@ -33,8 +33,8 @@ func (usecase *SavedUseCase) Create(domain Domain, ctx context.Context) (Domain,
 	return saved, nil
 }
 
-func (usecase *SavedUseCase) GetAll(ctx context.Context) ([]Domain, error) {
-	saveds, error := usecase.repo.GetAll(ctx)
+func (usecase *SavedUseCase) GetAll(username string, ctx context.Context) ([]Domain, error) {
+	saveds, error := usecase.repo.GetAll(username, ctx)
 
 	if error != nil {
 		return []Domain{}, error

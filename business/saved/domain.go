@@ -19,13 +19,13 @@ type Domain struct {
 }
 
 type SavedUsecaseInterface interface {
-	GetAll(ctx context.Context) ([]Domain, error)
+	GetAll(username string, ctx context.Context) ([]Domain, error)
 	Create(domain Domain, ctx context.Context) (Domain, error)
 	Delete(domain Domain, ctx context.Context) (Domain, error)
 }
 
 type SavedRepoInterface interface {
-	GetAll(ctx context.Context) ([]Domain, error)
+	GetAll(username string, ctx context.Context) ([]Domain, error)
 	Create(domain Domain, ctx context.Context) (Domain, error)
 	Delete(domain Domain, ctx context.Context) (Domain, error)
 }

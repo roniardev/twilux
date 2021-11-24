@@ -10,13 +10,13 @@ import (
 )
 
 type SavedResponse struct {
-	Id        string            `json:"id"`
-	CreatedAt time.Time         `json:"createdAt"`
-	UpdatedAt time.Time         `json:"updatedAt"`
-	DeletedAt gorm.DeletedAt    `json:"deletedAt"`
-	SnippetId string            `json:"snippetId"`
-	Snippet   []snippets.Domain `json:"snippet"`
-	Username  string            `json:"username"`
+	Id        string          `json:"id"`
+	CreatedAt time.Time       `json:"createdAt"`
+	UpdatedAt time.Time       `json:"updatedAt"`
+	DeletedAt gorm.DeletedAt  `json:"deletedAt"`
+	SnippetId string          `json:"snippetId"`
+	Snippet   snippets.Domain `json:"snippet"`
+	Username  string          `json:"username"`
 }
 
 func FromDomain(domain saved.Domain) SavedResponse {

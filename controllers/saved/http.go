@@ -23,7 +23,9 @@ func NewSavedController(uc saved.SavedUsecaseInterface) *SavedController {
 
 func (controller *SavedController) GetAll(c echo.Context) error {
 	ctx := c.Request().Context()
-	saved, err := controller.usecase.GetAll(ctx)
+	userId := middlewares.GetUser(c)
+	saved, err := controller.usecase.GetAll(userId.Username, ctx)
+
 	if err != nil {
 		return controllers.SuccessResponse(c, response.ToListDomain(saved))
 	}

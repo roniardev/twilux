@@ -18,9 +18,10 @@ func NewSavedRepository(db *gorm.DB) *SavedRepository {
 	return &SavedRepository{db}
 }
 
-func (repo *SavedRepository) GetAll(ctx context.Context) ([]saved.Domain, error) {
+func (repo *SavedRepository) GetAll(username string, ctx context.Context) ([]saved.Domain, error) {
 	sav := []Saved{}
-	result := repo.db.Find(&sav)
+	result := repo.db.Where("username = ?", username).Find(&sav)
+
 	if result.Error != nil {
 		return []saved.Domain{}, result.Error
 	}
@@ -48,7 +49,7 @@ func (repo *SavedRepository) Create(domain saved.Domain, ctx context.Context) (s
 // Update deleted_at field to specific snippet by id
 func (repo *SavedRepository) Delete(domain saved.Domain, ctx context.Context) (saved.Domain, error) {
 	savedDb := FromDomain(domain)
-	res := repo.db.Where("id = ?", savedDb.Username).Delete(&savedDb)
+	res := repo.db.Where("username = ?", savedDb.Username).Delete(&savedDb)
 	if res.Error != nil {
 		return saved.Domain{}, res.Error
 	}
