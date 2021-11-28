@@ -8,12 +8,11 @@ import (
 )
 
 type Domain struct {
-	Id        string
+	Username  string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt
 	Email     string
-	Username  string
 	Password  string
 	Token     string
 }

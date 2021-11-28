@@ -20,7 +20,7 @@ func NewUserRepository(gormDb *gorm.DB) users.UserRepoInterface {
 func (repo *UserRepository) Login(domain users.Domain, ctx context.Context) (users.Domain, error) {
 	userDb := FromDomain(domain)
 
-	err := repo.db.First(&userDb, "email = ? AND password = ?", userDb.Email, userDb.Password).Error
+	err := repo.db.First(&userDb, "email = ? ", userDb.Email).Error
 	if err != nil {
 		return users.Domain{}, err
 	}
