@@ -5,13 +5,13 @@ import (
 )
 
 type SavedDelete struct {
-	Id       string `json:"id"`
-	Username string `json:"snippet"`
+	SnippetId string `json:"snippet_id"`
+	Username  string `json:"username"`
 }
 
 func (s *SavedDelete) ToDeleteDomain() *saved.Domain {
 	return &saved.Domain{
-		Id:       s.Id,
-		Username: s.Username,
+		SnippetId: s.SnippetId,
+		Username:  s.Username,
 	}
 }

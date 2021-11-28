@@ -2,6 +2,7 @@ package saved
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"twilux/business/saved"
 
@@ -18,9 +19,15 @@ func NewSavedRepository(db *gorm.DB) *SavedRepository {
 	return &SavedRepository{db}
 }
 
-func (repo *SavedRepository) GetAll(username string, ctx context.Context) ([]saved.Domain, error) {
+func (repo *SavedRepository) GetAll(user string, ctx context.Context) ([]saved.Domain, error) {
 	sav := []Saved{}
-	result := repo.db.Where("username = ?", username).Find(&sav)
+	result := repo.db.Where("user = ?", user).Find(&sav)
+
+	errs := repo.db.Preload(clause.Associations).Preload("Snippet." + clause.Associations).Find(&sav)
+
+	if errs != nil {
+		return ToListDomain(sav), nil
+	}
 
 	if result.Error != nil {
 		return []saved.Domain{}, result.Error
@@ -35,11 +42,17 @@ func (repo *SavedRepository) Create(domain saved.Domain, ctx context.Context) (s
 	savedDb := FromDomain(domain)
 	savedDb.Id, _ = nanoid.Nanoid(10)
 
+	isDuplicate := repo.db.First(&Saved{}, "user = ? AND snippet_id = ?", savedDb.User, savedDb.SnippetId)
+	if isDuplicate.Error == nil {
+		return saved.Domain{}, errors.New("duplicate snippet saved")
+	}
+
 	err := repo.db.Create(&savedDb).Error
 	if err != nil {
 		return saved.Domain{}, err
 	}
-	errs := repo.db.Preload(clause.Associations).Preload("Saved."+clause.Associations).First(&savedDb, savedDb).Error
+	errs := repo.db.Preload(clause.Associations).Preload("Snippet." + clause.Associations).Find(&savedDb)
+
 	if errs != nil {
 		return savedDb.ToDomain(), nil
 	}
@@ -49,7 +62,13 @@ func (repo *SavedRepository) Create(domain saved.Domain, ctx context.Context) (s
 // Update deleted_at field to specific snippet by id
 func (repo *SavedRepository) Delete(domain saved.Domain, ctx context.Context) (saved.Domain, error) {
 	savedDb := FromDomain(domain)
-	res := repo.db.Where("username = ?", savedDb.Username).Delete(&savedDb)
+	isEligible := repo.db.Where("user = ? AND snippet_id = ?", savedDb.User, savedDb.SnippetId).First(&savedDb, savedDb)
+
+	if isEligible.Error != nil {
+		return saved.Domain{}, errors.New("you are not eligible to delete this saved")
+	}
+
+	res := repo.db.Where("user = ?", savedDb.User).Delete(&savedDb)
 	if res.Error != nil {
 		return saved.Domain{}, res.Error
 	}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 	"twilux/business/snippets"
+	"twilux/business/users"
 
 	"gorm.io/gorm"
 )
@@ -13,9 +14,10 @@ type Domain struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt
-	SnippetId string `json:"snippet"`
+	SnippetId string
 	Snippet   snippets.Domain
-	Username  string `json:"username"`
+	Username  string
+	UserInfo  users.Domain
 }
 
 type SavedUsecaseInterface interface {

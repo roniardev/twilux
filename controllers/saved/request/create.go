@@ -5,7 +5,7 @@ import (
 )
 
 type SavedCreate struct {
-	SnippetId string `json:"snippetId"`
+	SnippetId string `json:"snippet_id"`
 	Username  string `json:"username"`
 }
 

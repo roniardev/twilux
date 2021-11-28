@@ -4,28 +4,30 @@ import (
 	"fmt"
 	"time"
 	"twilux/business/saved"
-	"twilux/business/snippets"
+	resSnip "twilux/controllers/snippets/response"
+)
 
-	"gorm.io/gorm"
+const (
+	layoutISO = "2006-01-02T15:04:05.999999999Z07:00"
+	layoutUS  = "Monday, January 2, 2006, 03:04:01 PM"
 )
 
 type SavedResponse struct {
-	Id        string          `json:"id"`
-	CreatedAt time.Time       `json:"createdAt"`
-	UpdatedAt time.Time       `json:"updatedAt"`
-	DeletedAt gorm.DeletedAt  `json:"deletedAt"`
-	SnippetId string          `json:"snippetId"`
-	Snippet   snippets.Domain `json:"snippet"`
-	Username  string          `json:"username"`
+	Id        string                        `json:"id"`
+	CreatedAt string                        `json:"created_at"`
+	SnippetId string                        `json:"snippet_id"`
+	Snippet   resSnip.SnippetCreateResponse `json:"snippet"`
+	Username  string                        `json:"username"`
 }
 
 func FromDomain(domain saved.Domain) SavedResponse {
+	t, _ := time.Parse(layoutISO, domain.CreatedAt.Format(layoutISO))
+
 	return SavedResponse{
+		CreatedAt: t.Format(layoutUS),
 		Id:        domain.Id,
-		CreatedAt: domain.CreatedAt,
-		UpdatedAt: domain.UpdatedAt,
-		DeletedAt: domain.DeletedAt,
 		SnippetId: domain.SnippetId,
+		Snippet:   resSnip.FromCreateDomain(domain.Snippet),
 		Username:  domain.Username,
 	}
 }

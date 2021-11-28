@@ -44,8 +44,8 @@ func (usecase *SavedUseCase) GetAll(username string, ctx context.Context) ([]Dom
 
 // Delete Saved
 func (usecase *SavedUseCase) Delete(domain Domain, ctx context.Context) (Domain, error) {
-	if domain.Id == "" {
-		return Domain{}, errors.New("id is required")
+	if domain.SnippetId == "" {
+		return Domain{}, errors.New("snippet id is required")
 	}
 
 	saved, error := usecase.repo.Delete(domain, ctx)
