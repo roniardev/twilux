@@ -5,7 +5,7 @@ import (
 )
 
 type CommentCreate struct {
-	SnippetId string `json:"snippetId"`
+	SnippetId string `json:"snippet_id"`
 	Comment   string `json:"comment"`
 	Username  string `json:"username"`
 }

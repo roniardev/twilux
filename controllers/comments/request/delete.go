@@ -6,8 +6,8 @@ import (
 
 type CommentDelete struct {
 	Id        string `json:"id"`
-	Username  string `json:"usrname"`
-	SnippetId string `json:"snippetId"`
+	Username  string `json:"username"`
+	SnippetId string `json:"snippet_id"`
 }
 
 func (s *CommentDelete) ToDeleteDomain() *comments.Domain {

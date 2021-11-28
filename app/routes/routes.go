@@ -40,6 +40,7 @@ func (controller RouteControllerList) RouteRegister(c *echo.Echo) {
 	saved.DELETE("/", controller.SavedController.Delete, middleware.JWTWithConfig(controller.JwtConfig))
 
 	comment := c.Group("/comments")
+	comment.GET("/", controller.CommentController.GetAllUser, middleware.JWTWithConfig(controller.JwtConfig))
 	comment.GET("/:id", controller.CommentController.GetAll)
 	comment.POST("/:id", controller.CommentController.Create, middleware.JWTWithConfig(controller.JwtConfig))
 	comment.PUT("/:id", controller.CommentController.Update, middleware.JWTWithConfig(controller.JwtConfig))

@@ -42,13 +42,20 @@ func (usecase *CommentUseCase) GetAll(snippetId string, ctx context.Context) ([]
 	return saveds, nil
 }
 
+func (usecase *CommentUseCase) GetAllUser(username string, ctx context.Context) ([]Domain, error) {
+	saveds, error := usecase.repo.GetAllUser(username, ctx)
+
+	if error != nil {
+		return []Domain{}, error
+	}
+	return saveds, nil
+}
+
 func (usecase *CommentUseCase) Update(domain Domain, ctx context.Context) (Domain, error) {
 	if domain.Id == "" {
 		return Domain{}, errors.New("id is required")
 	}
-	if domain.Comment == "" {
-		return Domain{}, errors.New("comment is required")
-	}
+
 	snippet, error := usecase.repo.Update(domain, ctx)
 
 	if error != nil {

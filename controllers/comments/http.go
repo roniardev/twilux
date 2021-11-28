@@ -24,13 +24,25 @@ func NewCommentController(uc comments.CommentUsecaseInterface) *CommentControlle
 func (controller *CommentController) GetAll(c echo.Context) error {
 	ctx := c.Request().Context()
 	id := c.Param("id")
-	saved, err := controller.usecase.GetAll(id, ctx)
+	comment, err := controller.usecase.GetAll(id, ctx)
 
 	if err != nil {
-		return controllers.SuccessResponse(c, response.ToListDomain(saved))
+		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
 	}
 
-	return controllers.SuccessResponse(c, response.ToListDomain(saved))
+	return controllers.SuccessResponse(c, []string{"Get all comment succed."}, response.ToListDomain(comment))
+}
+
+func (controller *CommentController) GetAllUser(c echo.Context) error {
+	ctx := c.Request().Context()
+	userId := middlewares.GetUser(c)
+	comment, err := controller.usecase.GetAllUser(userId.Username, ctx)
+
+	if err != nil {
+		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
+	}
+
+	return controllers.SuccessResponse(c, []string{"Get all comment succed."}, response.ToListDomain(comment))
 }
 
 func (controller *CommentController) Create(c echo.Context) error {
@@ -46,11 +58,11 @@ func (controller *CommentController) Create(c echo.Context) error {
 		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", errs)
 	}
 
-	saved, err := controller.usecase.Create(*commentCreate.ToDomain(), ctx)
+	comment, err := controller.usecase.Create(*commentCreate.ToDomain(), ctx)
 	if err != nil {
 		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
 	}
-	return controllers.SuccessResponse(c, response.FromDomain(saved))
+	return controllers.SuccessResponse(c, []string{"Create comment succed."}, response.FromDomain(comment))
 }
 
 func (controller *CommentController) Update(c echo.Context) error {
@@ -67,14 +79,14 @@ func (controller *CommentController) Update(c echo.Context) error {
 	commentDomain.SnippetId = id
 	commentDomain.Username = userId.Username
 
-	_, err := controller.usecase.Update(*commentDomain, ctx)
+	res, err := controller.usecase.Update(*commentDomain, ctx)
 	if err != nil {
 		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
 	}
-	return controllers.SuccessResponse(c, response.FromDomain(*commentDomain))
+	return controllers.SuccessResponse(c, []string{"Update comment succed."}, response.FromUpdateDomain(res))
 }
 
-// Delete saved controller
+// Delete comment controller
 
 func (controller *CommentController) Delete(c echo.Context) error {
 	comReq := request.CommentDelete{}
@@ -90,9 +102,9 @@ func (controller *CommentController) Delete(c echo.Context) error {
 	commentDomain := comReq.ToDeleteDomain()
 	commentDomain.Username = userId.Username
 
-	_, err := controller.usecase.Delete(*commentDomain, ctx)
+	res, err := controller.usecase.Delete(*commentDomain, ctx)
 	if err != nil {
 		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
 	}
-	return controllers.SuccessResponse(c, response.FromDomain(*commentDomain))
+	return controllers.SuccessResponse(c, []string{"Delete comment succed."}, response.FromDeleteDomain(res))
 }
