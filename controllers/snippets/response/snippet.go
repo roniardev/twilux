@@ -4,27 +4,26 @@ import (
 	"fmt"
 	"time"
 	"twilux/business/snippets"
-
-	"gorm.io/gorm"
 )
 
 type SnippetResponse struct {
-	Id        string         `json:"id"`
-	CreatedAt time.Time      `json:"createdAt"`
-	UpdatedAt time.Time      `json:"updatedAt"`
-	DeletedAt gorm.DeletedAt `json:"deletedAt"`
-	Title     string         `json:"title"`
-	Snippet   string         `json:"snippet"`
-	Descb     string         `json:"descb"`
-	Username  string         `json:"username"`
+	Id        string `json:"id"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
+	Title     string `json:"title"`
+	Snippet   string `json:"snippet"`
+	Descb     string `json:"descb"`
+	Username  string `json:"username"`
 }
 
 func FromDomain(domain snippets.Domain) SnippetResponse {
+	tC, _ := time.Parse(layoutISO, domain.CreatedAt.Format(layoutISO))
+	tU, _ := time.Parse(layoutISO, domain.UpdatedAt.Format(layoutISO))
+
 	return SnippetResponse{
 		Id:        domain.Id,
-		CreatedAt: domain.CreatedAt,
-		UpdatedAt: domain.UpdatedAt,
-		DeletedAt: domain.DeletedAt,
+		CreatedAt: tC.Format(layoutUS),
+		UpdatedAt: tU.Format(layoutUS),
 		Title:     domain.Title,
 		Snippet:   domain.Snippet,
 		Descb:     domain.Descb,

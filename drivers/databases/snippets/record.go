@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 	"twilux/business/snippets"
-	"twilux/business/users"
+	"twilux/drivers/databases/users"
 
 	"gorm.io/gorm"
 )
@@ -16,9 +16,9 @@ type Snippet struct {
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 	Title     string         `gorm:"size:50;not null"`
 	Descb     string
-	Snippet   string       `gorm:"not null"`
-	Username  string       `gorm:"not null;size:20;index"`
-	UserInfo  users.Domain `gorm:"foreignKey:Username;references:username"`
+	Snippet   string     `gorm:"not null"`
+	User      string     `gorm:"not null;size:20;index"`
+	UserInfo  users.User `gorm:"foreignkey:User;references:Username"`
 }
 
 func (snippet Snippet) ToDomain() snippets.Domain {
@@ -30,7 +30,7 @@ func (snippet Snippet) ToDomain() snippets.Domain {
 		Title:     snippet.Title,
 		Descb:     snippet.Descb,
 		Snippet:   snippet.Snippet,
-		Username:  snippet.Username,
+		Username:  snippet.User,
 	}
 }
 
@@ -43,8 +43,15 @@ func FromDomain(domain snippets.Domain) Snippet {
 		Title:     domain.Title,
 		Descb:     domain.Descb,
 		Snippet:   domain.Snippet,
-		Username:  domain.Username,
+		User:      domain.Username,
 	}
+}
+
+func ToSingleDomain(data Snippet) (result snippets.Domain) {
+	fmt.Println("ToSingleDomain db/snippets/record")
+	fmt.Println(result)
+	result = data.ToDomain()
+	return result
 }
 
 func ToListDomain(data []Snippet) (result []snippets.Domain) {

@@ -25,10 +25,22 @@ func (controller *SnippetController) GetAll(c echo.Context) error {
 	ctx := c.Request().Context()
 	snippet, err := controller.usecase.GetAll(ctx)
 	if err != nil {
-		return controllers.SuccessResponse(c, response.ToListDomain(snippet))
+		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
 	}
 
-	return controllers.SuccessResponse(c, response.ToListDomain(snippet))
+	return controllers.SuccessResponse(c, []string{"Get all snippets succed."}, response.ToListDomain(snippet))
+}
+
+func (controller *SnippetController) GetById(c echo.Context) error {
+	ctx := c.Request().Context()
+	id := c.Param("id")
+	snippet, err := controller.usecase.GetById(id, ctx)
+
+	if err != nil {
+		return controllers.ErrorResponse(c, http.StatusInternalServerError, "Snippet with this id is not found", err)
+	}
+
+	return controllers.SuccessResponse(c, []string{"Get snippet succed."}, response.FromDomain(snippet))
 }
 
 func (controller *SnippetController) Create(c echo.Context) error {
@@ -45,45 +57,44 @@ func (controller *SnippetController) Create(c echo.Context) error {
 	if err != nil {
 		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
 	}
-	return controllers.SuccessResponse(c, response.FromDomain(snippet))
+	return controllers.SuccessResponse(c, []string{"A new snippet created."}, response.FromCreateDomain(snippet))
 }
 
 // Update snippet controller
 func (controller *SnippetController) Update(c echo.Context) error {
-	snippReq := request.SnippetUpdate{}
+	var snippetUpdate request.SnippetUpdate
 	ctx := c.Request().Context()
 	id := c.Param("id")
+	userId := middlewares.GetUser(c)
+	snippetUpdate.Id = id
+	snippetUpdate.Username = userId.Username
 
-	if err := c.Bind(&snippReq); err != nil {
+	if err := c.Bind(&snippetUpdate); err != nil {
 		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
 	}
-	snippetDomain := snippReq.ToUpdateDomain()
-	snippetDomain.Id = id
-
-	_, err := controller.usecase.Update(*snippetDomain, ctx)
+	res, err := controller.usecase.Update(*snippetUpdate.ToUpdateDomain(), ctx)
 	if err != nil {
 		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
 	}
-	return controllers.SuccessResponse(c, response.FromDomain(*snippetDomain))
+	return controllers.SuccessResponse(c, []string{"Data updated."}, response.FromUpdateDomain(res))
 }
 
 // Delete snippet controller
 
 func (controller *SnippetController) Delete(c echo.Context) error {
-	snippReq := request.SnippetDelete{}
+	var snippetDelete request.SnippetDelete
 	ctx := c.Request().Context()
-
+	id := c.Param("id")
 	userId := middlewares.GetUser(c)
+	snippetDelete.Id = id
+	snippetDelete.Username = userId.Username
 
-	if err := c.Bind(&snippReq); err != nil {
+	if err := c.Bind(&snippetDelete); err != nil {
 		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
 	}
-	snippetDomain := snippReq.ToDeleteDomain()
-	snippetDomain.Username = userId.Username
-
-	_, err := controller.usecase.Delete(*snippetDomain, ctx)
+	res, err := controller.usecase.Delete(*snippetDelete.ToDeleteDomain(), ctx)
 	if err != nil {
 		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
 	}
-	return controllers.SuccessResponse(c, response.FromDomain(*snippetDomain))
+	return controllers.SuccessResponse(c, []string{"Snippet deleted."}, response.FromDeleteDomain(res))
 }

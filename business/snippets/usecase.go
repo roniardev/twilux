@@ -42,14 +42,17 @@ func (usecase *SnippetUseCase) GetAll(ctx context.Context) ([]Domain, error) {
 	return snippets, nil
 }
 
+func (usecase *SnippetUseCase) GetById(snippetId string, ctx context.Context) (Domain, error) {
+	snippet, error := usecase.repo.GetById(snippetId, ctx)
+
+	if error != nil {
+		return Domain{}, error
+	}
+	return snippet, nil
+}
+
 // Update func updates a snippet
 func (usecase *SnippetUseCase) Update(domain Domain, ctx context.Context) (Domain, error) {
-	if domain.Title == "" {
-		return Domain{}, errors.New("title is required")
-	}
-	if domain.Snippet == "" {
-		return Domain{}, errors.New("snippet is required")
-	}
 	snippet, error := usecase.repo.Update(domain, ctx)
 
 	if error != nil {

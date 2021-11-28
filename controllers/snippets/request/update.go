@@ -5,15 +5,19 @@ import (
 )
 
 type SnippetUpdate struct {
-	Title   string `json:"title"`
-	Descb   string `json:"descb"`
-	Snippet string `json:"snippet"`
+	Id       string `json:"id"`
+	Title    string `json:"title"`
+	Descb    string `json:"descb"`
+	Snippet  string `json:"snippet"`
+	Username string `json:"usrname"`
 }
 
 func (s *SnippetUpdate) ToUpdateDomain() *snippets.Domain {
 	return &snippets.Domain{
-		Title:   s.Title,
-		Descb:   s.Descb,
-		Snippet: s.Snippet,
+		Id:       s.Id,
+		Title:    s.Title,
+		Descb:    s.Descb,
+		Snippet:  s.Snippet,
+		Username: s.Username,
 	}
 }
