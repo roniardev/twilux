@@ -2,8 +2,8 @@ package snippets
 
 import (
 	"context"
-	"errors"
 	"time"
+	"twilux/business"
 )
 
 type SnippetUseCase struct {
@@ -20,10 +20,10 @@ func NewUsecase(snippetRepo SnippetRepoInterface, contextTimeout time.Duration) 
 
 func (usecase *SnippetUseCase) Create(domain Domain, ctx context.Context) (Domain, error) {
 	if domain.Title == "" {
-		return Domain{}, errors.New("title is required")
+		return Domain{}, business.ErrorEmptyTitle
 	}
 	if domain.Snippet == "" {
-		return Domain{}, errors.New("snippet is required")
+		return Domain{}, business.ErrorEmptySnippet
 	}
 	snippet, error := usecase.repo.Create(domain, ctx)
 
@@ -64,7 +64,7 @@ func (usecase *SnippetUseCase) Update(domain Domain, ctx context.Context) (Domai
 // Delete Snippet
 func (usecase *SnippetUseCase) Delete(domain Domain, ctx context.Context) (Domain, error) {
 	if domain.Id == "" {
-		return Domain{}, errors.New("id is required")
+		return Domain{}, business.ErrorInvalidSnippetID
 	}
 
 	snippet, error := usecase.repo.Delete(domain, ctx)

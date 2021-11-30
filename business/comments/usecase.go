@@ -2,8 +2,8 @@ package comments
 
 import (
 	"context"
-	"errors"
 	"time"
+	"twilux/business"
 )
 
 type CommentUseCase struct {
@@ -20,11 +20,12 @@ func NewUsecase(savedRepo CommentRepoInterface, contextTimeout time.Duration) Co
 
 func (usecase *CommentUseCase) Create(domain Domain, ctx context.Context) (Domain, error) {
 	if domain.SnippetId == "" {
-		return Domain{}, errors.New("snippet id is required")
+		return Domain{}, business.ErrorInvalidSnippetID
 	}
-	if domain.Username == "" {
-		return Domain{}, errors.New("username is required")
+	if domain.Comment == "" {
+		return Domain{}, business.ErrorEmptyComment
 	}
+
 	saved, error := usecase.repo.Create(domain, ctx)
 
 	if error != nil {
@@ -53,7 +54,7 @@ func (usecase *CommentUseCase) GetAllUser(username string, ctx context.Context) 
 
 func (usecase *CommentUseCase) Update(domain Domain, ctx context.Context) (Domain, error) {
 	if domain.Id == "" {
-		return Domain{}, errors.New("id is required")
+		return Domain{}, business.ErrorInvalidCommentID
 	}
 
 	snippet, error := usecase.repo.Update(domain, ctx)
@@ -67,7 +68,7 @@ func (usecase *CommentUseCase) Update(domain Domain, ctx context.Context) (Domai
 // Delete Comment
 func (usecase *CommentUseCase) Delete(domain Domain, ctx context.Context) (Domain, error) {
 	if domain.Id == "" {
-		return Domain{}, errors.New("id is required")
+		return Domain{}, business.ErrorInvalidCommentID
 	}
 
 	saved, error := usecase.repo.Delete(domain, ctx)

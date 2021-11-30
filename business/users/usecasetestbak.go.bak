@@ -1,0 +1,83 @@
+// package dd
+
+import (
+	"context"
+	"os"
+	"testing"
+	"twilux/business"
+	"twilux/business/users"
+	_mockUserRepository "twilux/business/users/mocks"
+	"twilux/helpers/encrypt"
+	"twilux/middlewares"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+)
+
+var (
+	userRepository _mockUserRepository.UserRepoInterface
+	userUseCase    users.UserUsecaseInterface
+	jwtAuth        *middlewares.ConfigJWT
+)
+
+func setup() {
+	jwtAuth = &middlewares.ConfigJWT{SecretJWT: "twistedFateLux", ExpiresDuration: 1}
+	userUseCase = users.NewUsecase(*jwtAuth, &userRepository, 1)
+}
+
+func TestMain(m *testing.M) {
+	setup()
+	os.Exit(m.Run())
+}
+
+func TestRegister(t *testing.T) {
+	t.Run("Test 1 | Valid Test", func(t *testing.T) {
+		galio := users.Domain{
+			Username: "dema",
+			Email:    "demacia@email.com",
+			Password: "112233",
+		}
+		userRepository.On("Register", mock.Anything, mock.Anything).Return(galio, nil).Once()
+
+		_, err := userRepository.Register(galio, context.Background())
+
+		assert.Equal(t, nil, err)
+	})
+	t.Run("Test 2 | Invalid Test : Email required", func(t *testing.T) {
+		galio := users.Domain{}
+		userRepository.On("Register", mock.Anything, mock.Anything).Return(galio, nil).Once()
+
+		_, err := userRepository.Register(galio, context.Background())
+
+		assert.Equal(t, business.ErrorInvalidEmail, err)
+	})
+
+}
+
+// test for login
+func TestLogin(t *testing.T) {
+	t.Run("Test 1 | Valid Test", func(t *testing.T) {
+		hashedPassword, _ := encrypt.Hash("112233")
+
+		galio := users.Domain{
+			Email:    "demacia@email.com",
+			Password: hashedPassword,
+		}
+		userRepository.On("Login", mock.Anything, mock.Anything).Return(galio, nil).Once()
+		_, err := userRepository.Login(galio, context.Background())
+		assert.Equal(t, nil, err)
+		assert.Equal(t, galio, galio)
+	})
+	// Invalid Test
+	t.Run("Test 2 | Invalid Test", func(t *testing.T) {
+		hashedPassword, _ := encrypt.Hash("112233")
+
+		galio := users.Domain{
+			Email:    "exa@email.com",
+			Password: hashedPassword,
+		}
+		userRepository.On("Login", mock.Anything, mock.Anything).Return(galio, nil).Once()
+		_, err := userRepository.Login(users.Domain{Email: "exo@email.com", Password: "133332"}, context.Background())
+		assert.Equal(t, err, err)
+	})
+}

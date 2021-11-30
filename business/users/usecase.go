@@ -2,9 +2,8 @@ package users
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"time"
+	"twilux/business"
 	"twilux/helpers/encrypt"
 	"twilux/middlewares"
 )
@@ -25,17 +24,16 @@ func NewUsecase(configJWT middlewares.ConfigJWT, userRepo UserRepoInterface, con
 
 func (usecase *UserUseCase) Login(domain Domain, ctx context.Context) (Domain, error) {
 	if domain.Email == "" {
-		fmt.Println("email Empty")
-		return Domain{}, errors.New("email required")
+		return Domain{}, business.ErrorInvalidEmail
 	}
 	if domain.Password == "" {
-		return Domain{}, errors.New("password required")
+		return Domain{}, business.ErrorInvalidPassword
 	}
 
 	user, err := usecase.repo.Login(domain, ctx)
 
 	if !(encrypt.HashValidation(domain.Password, user.Password)) {
-		return Domain{}, errors.New("invalid password")
+		return Domain{}, business.ErrorInvalidPassword
 	}
 
 	if err != nil {
@@ -49,20 +47,16 @@ func (usecase *UserUseCase) Login(domain Domain, ctx context.Context) (Domain, e
 	return user, nil
 }
 
-func (usecase *UserUseCase) GetAllUsers(ctx context.Context) ([]Domain, error) {
-	return []Domain{}, nil
-}
-
 // Signup usecase for user
 func (usecase *UserUseCase) Register(domain Domain, ctx context.Context) (Domain, error) {
 	if domain.Email == "" {
-		return Domain{}, errors.New("email required")
+		return Domain{}, business.ErrorInvalidEmail
 	}
 	if domain.Password == "" {
-		return Domain{}, errors.New("password required")
+		return Domain{}, business.ErrorInvalidPassword
 	}
 	if domain.Username == "" {
-		return Domain{}, errors.New("username required")
+		return Domain{}, business.ErrorInvalidUsername
 	}
 	domain.Password, _ = encrypt.Hash(domain.Password)
 

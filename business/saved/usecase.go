@@ -2,8 +2,8 @@ package saved
 
 import (
 	"context"
-	"errors"
 	"time"
+	"twilux/business"
 )
 
 type SavedUseCase struct {
@@ -20,10 +20,7 @@ func NewUsecase(savedRepo SavedRepoInterface, contextTimeout time.Duration) Save
 
 func (usecase *SavedUseCase) Create(domain Domain, ctx context.Context) (Domain, error) {
 	if domain.SnippetId == "" {
-		return Domain{}, errors.New("snippet id is required")
-	}
-	if domain.Username == "" {
-		return Domain{}, errors.New("username is required")
+		return Domain{}, business.ErrorInvalidSnippetID
 	}
 	saved, error := usecase.repo.Create(domain, ctx)
 
@@ -45,7 +42,7 @@ func (usecase *SavedUseCase) GetAll(username string, ctx context.Context) ([]Dom
 // Delete Saved
 func (usecase *SavedUseCase) Delete(domain Domain, ctx context.Context) (Domain, error) {
 	if domain.SnippetId == "" {
-		return Domain{}, errors.New("snippet id is required")
+		return Domain{}, business.ErrorInvalidSnippetID
 	}
 
 	saved, error := usecase.repo.Delete(domain, ctx)
