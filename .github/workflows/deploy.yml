@@ -3,10 +3,10 @@ name: Running Unit Test, Build image & container, Run in EC2
 on:
   pull_request:
     branches:
-      - 'main'
+      - 'master'
   push: 
     branches:
-      - 'main'
+      - 'master'
 
 jobs:
   unit-test:
