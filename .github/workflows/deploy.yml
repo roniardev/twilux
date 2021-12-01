@@ -49,4 +49,4 @@ jobs:
           # key: ${{ secrets.LINODE_SSHKEY }}
           password: ${{ secrets.LINODE_PASSWORD }}
           port: ${{ secrets.LINODE_PORT }}
-          script: docker rm -f $(docker ps -a -q) && docker pull niroin/twilux:1.0.2 && docker run -d -p 80:80 --name=twilux niroin/twilux:1.0.2
+          script: mkdir twilux && cd twilux && wget https://gist.githubusercontent.com/enjinerd/09f552dfa935ce6198da8873c17c3271/raw/fae224f6605dd9894d9a6ca834eb6585fec03ba4/docker-compose.yml && docker-compose up -d
