@@ -49,4 +49,4 @@ jobs:
           # key: ${{ secrets.LINODE_SSHKEY }}
           password: ${{ secrets.LINODE_PASSWORD }}
           port: ${{ secrets.LINODE_PORT }}
-          script: mkdir twilux && cd twilux && wget https://gist.githubusercontent.com/enjinerd/09f552dfa935ce6198da8873c17c3271/raw/fae224f6605dd9894d9a6ca834eb6585fec03ba4/docker-compose.yml && docker-compose up -d
+          script: mkdir twilux && cd twilux && wget https://gist.githubusercontent.com/enjinerd/09f552dfa935ce6198da8873c17c3271/raw/bdb1d511487ea100ac66dae19f542e8eb4164cce/docker-compose.yml && docker-compose up -d
