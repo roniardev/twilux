@@ -1,19 +1,21 @@
 package response
 
 import (
-	"time"
 	"twilux/business/users"
+	format_date "twilux/helpers/date"
 )
 
 type RegUserResponse struct {
-	CreatedAt time.Time `json:"created_at"`
-	Username  string    `json:"username"`
-	Email     string    `json:"email"`
+	CreatedAt string `json:"created_at"`
+	Username  string `json:"username"`
+	Email     string `json:"email"`
 }
 
 func FromRegDomain(domain users.Domain) RegUserResponse {
+	t := format_date.FormatDate(domain.CreatedAt.Format(format_date.LayoutISO))
+
 	return RegUserResponse{
-		CreatedAt: domain.CreatedAt,
+		CreatedAt: t,
 		Username:  domain.Username,
 		Email:     domain.Email,
 	}

@@ -1,8 +1,8 @@
 package response
 
 import (
-	"time"
 	"twilux/business/comments"
+	format_date "twilux/helpers/date"
 )
 
 type CommentGetResponse struct {
@@ -15,13 +15,13 @@ type CommentGetResponse struct {
 }
 
 func FromGetDomain(domain comments.Domain) CommentGetResponse {
-	tC, _ := time.Parse(layoutISO, domain.CreatedAt.Format(layoutISO))
-	tU, _ := time.Parse(layoutISO, domain.UpdatedAt.Format(layoutISO))
+	tC := format_date.FormatDate(domain.CreatedAt.Format(format_date.LayoutISO))
+	tU := format_date.FormatDate(domain.UpdatedAt.Format(format_date.LayoutISO))
 
 	return CommentGetResponse{
 		Id:        domain.Id,
-		CreatedAt: tC.Format(layoutUS),
-		UpdatedAt: tU.Format(layoutUS),
+		CreatedAt: tC,
+		UpdatedAt: tU,
 		Username:  domain.Username,
 		Comment:   domain.Comment,
 		SnippetId: domain.SnippetId,

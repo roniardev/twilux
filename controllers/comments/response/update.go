@@ -1,9 +1,9 @@
 package response
 
 import (
-	"time"
 	"twilux/business/comments"
 	resSnip "twilux/controllers/snippets/response"
+	format_date "twilux/helpers/date"
 )
 
 type CommentUpdateResponse struct {
@@ -16,11 +16,11 @@ type CommentUpdateResponse struct {
 }
 
 func FromUpdateDomain(domain comments.Domain) CommentUpdateResponse {
-	t, _ := time.Parse(layoutISO, domain.UpdatedAt.Format(layoutISO))
+	t := format_date.FormatDate(domain.UpdatedAt.Format(format_date.LayoutISO))
 
 	return CommentUpdateResponse{
 		Id:        domain.Id,
-		UpdatedAt: t.Format(layoutUS),
+		UpdatedAt: t,
 		Username:  domain.Username,
 		Comment:   domain.Comment,
 		SnippetId: domain.SnippetId,
