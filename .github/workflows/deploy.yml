@@ -1,0 +1,52 @@
+name: Running Unit Test, Build image & container, Run in EC2
+
+on:
+  pull_request:
+    branches:
+      - "master"
+  push:
+    branches:
+      - "containerization"
+
+jobs:
+  # unit-test:
+  #   name: "unit test"
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Set up Go
+  #       uses: actions/setup-go@v2
+  #       with:
+  #         go-version: 1.16
+  #     - name: running unit test
+  #       run: go test ./... -cover
+
+  # build-push-docker:
+  #   name: "Build docker image and push to dockerhub"
+  #   runs-on: ubuntu-latest
+  #   needs: unit-test
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: build docker
+  #       run: docker build -t niroin/twilux:1.0.2 .
+  #     - name: login registry docker hub
+  #       uses: docker/login-action@v1
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_PASSWORD }}
+  #     - name: push image to registry docker hub
+  #       run: docker push niroin/twilux:1.0.2
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: deploy to linode
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.LINODE_HOST }}
+          username: ${{ secrets.LINODE_USERNAME }}
+          # key: ${{ secrets.LINODE_SSHKEY }}
+          password: ${{ secrets.LINODE_PASSWORD }}
+          port: ${{ secrets.LINODE_PORT }}
+          script: mkdir -p twilux && cd twilux && wget https://gist.githubusercontent.com/enjinerd/09f552dfa935ce6198da8873c17c3271/raw/bdb1d511487ea100ac66dae19f542e8eb4164cce/docker-compose.yml && docker-compose up -d
