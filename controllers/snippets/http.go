@@ -1,7 +1,10 @@
 package controllers
 
 import (
+	"errors"
+	"fmt"
 	"net/http"
+	"strings"
 	"twilux/business/snippets"
 	"twilux/controllers"
 	"twilux/controllers/snippets/request"
@@ -34,6 +37,12 @@ func (controller *SnippetController) GetAll(c echo.Context) error {
 func (controller *SnippetController) GetById(c echo.Context) error {
 	ctx := c.Request().Context()
 	id := c.Param("id")
+	id = strings.Replace(id, "/", "", -1)
+	fmt.Println(id)
+	if len(id) < 10 || len(id) > 10 {
+		return controllers.ErrorResponse(c, http.StatusNotFound, "Not Found", errors.New("snippet with this id not found"))
+	}
+
 	snippet, err := controller.usecase.GetById(id, ctx)
 
 	if err != nil {
@@ -51,11 +60,11 @@ func (controller *SnippetController) Create(c echo.Context) error {
 
 	errs := c.Bind(&snippetCreate)
 	if errs != nil {
-		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", errs)
+		return controllers.ErrorResponse(c, http.StatusBadRequest, "invalid data", errs)
 	}
 	snippet, err := controller.usecase.Create(*snippetCreate.ToDomain(), ctx)
 	if err != nil {
-		return controllers.ErrorResponse(c, http.StatusInternalServerError, "error binding", err)
+		return controllers.ErrorResponse(c, http.StatusBadRequest, "invalid data", err)
 	}
 	return controllers.SuccessResponse(c, []string{"A new snippet created."}, response.FromCreateDomain(snippet))
 }
@@ -65,6 +74,8 @@ func (controller *SnippetController) Update(c echo.Context) error {
 	var snippetUpdate request.SnippetUpdate
 	ctx := c.Request().Context()
 	id := c.Param("id")
+	id = strings.Replace(id, "/", "", -1)
+
 	userId := middlewares.GetUser(c)
 	snippetUpdate.Id = id
 	snippetUpdate.Username = userId.Username
@@ -85,6 +96,8 @@ func (controller *SnippetController) Delete(c echo.Context) error {
 	var snippetDelete request.SnippetDelete
 	ctx := c.Request().Context()
 	id := c.Param("id")
+	id = strings.Replace(id, "/", "", -1)
+
 	userId := middlewares.GetUser(c)
 	snippetDelete.Id = id
 	snippetDelete.Username = userId.Username
