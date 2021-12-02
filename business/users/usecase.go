@@ -2,10 +2,17 @@ package users
 
 import (
 	"context"
+	"strings"
 	"time"
 	"twilux/business"
 	"twilux/helpers/encrypt"
 	"twilux/middlewares"
+
+	emailverifier "github.com/AfterShip/email-verifier"
+)
+
+var (
+	verifier = emailverifier.NewVerifier().EnableAutoUpdateDisposable()
 )
 
 type UserUseCase struct {
@@ -24,20 +31,19 @@ func NewUsecase(configJWT middlewares.ConfigJWT, userRepo UserRepoInterface, con
 
 func (usecase *UserUseCase) Login(domain Domain, ctx context.Context) (Domain, error) {
 	if domain.Email == "" {
-		return Domain{}, business.ErrorInvalidEmail
+		return Domain{}, business.ErrorEmptyEmail
 	}
 	if domain.Password == "" {
-		return Domain{}, business.ErrorInvalidPassword
+		return Domain{}, business.ErrorEmptyPassword
 	}
 
 	user, err := usecase.repo.Login(domain, ctx)
+	if err != nil {
+		return Domain{}, business.ErrorDataNotFound
+	}
 
 	if !(encrypt.HashValidation(domain.Password, user.Password)) {
 		return Domain{}, business.ErrorInvalidPassword
-	}
-
-	if err != nil {
-		return Domain{}, err
 	}
 
 	user.Token, err = usecase.ConfigJWT.GenerateToken(user.Username)
@@ -50,14 +56,23 @@ func (usecase *UserUseCase) Login(domain Domain, ctx context.Context) (Domain, e
 // Signup usecase for user
 func (usecase *UserUseCase) Register(domain Domain, ctx context.Context) (Domain, error) {
 	if domain.Email == "" {
-		return Domain{}, business.ErrorInvalidEmail
+		return Domain{}, business.ErrorEmptyEmail
 	}
 	if domain.Password == "" {
-		return Domain{}, business.ErrorInvalidPassword
+		return Domain{}, business.ErrorEmptyPassword
 	}
 	if domain.Username == "" {
 		return Domain{}, business.ErrorInvalidUsername
 	}
+
+	emailDomain := strings.Split(domain.Email, "@")[1]
+
+	_, verifEmail := verifier.CheckMX(emailDomain)
+	isDispoEmail := verifier.IsDisposable(emailDomain)
+	if verifEmail != nil || isDispoEmail {
+		return Domain{}, business.ErrorInvalidEmail
+	}
+
 	domain.Password, _ = encrypt.Hash(domain.Password)
 
 	user, err := usecase.repo.Register(domain, ctx)

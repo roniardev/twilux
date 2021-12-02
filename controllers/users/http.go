@@ -31,7 +31,7 @@ func (controller *UserController) Login(c echo.Context) error {
 	}
 	user, err := controller.usecase.Login(*userLogin.ToDomain(), ctx)
 	if err != nil {
-		return controllers.ErrorResponse(c, http.StatusInternalServerError, "Email or password is incorrect.", err)
+		return controllers.ErrorResponse(c, http.StatusBadRequest, "bad request", err)
 	}
 	return controllers.SuccessResponse(c, []string{"Logged in."}, response.FromLogDomain(user))
 }
@@ -47,7 +47,7 @@ func (controller *UserController) Register(c echo.Context) error {
 	}
 	user, err := controller.usecase.Register(*userRegister.ToDomain(), ctx)
 	if err != nil {
-		return controllers.ErrorResponse(c, http.StatusBadRequest, "Username or email has been registered.", err)
+		return controllers.ErrorResponse(c, http.StatusBadRequest, "bad request", err)
 	}
 	return controllers.SuccessResponse(c, []string{"Register succed."}, response.FromRegDomain(user))
 }
