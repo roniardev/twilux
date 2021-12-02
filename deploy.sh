@@ -1,5 +1,12 @@
 # remove all docker containers
-docker rm -f $(docker ps -a -q)
+docker rm -vf $(docker ps -aq)
+docker rmi -f $(docker images -aq)
+CM=~/deploy.sh
+
+if test -f "$CM"; then
+    rm -f ~/deploy.sh
+fi
+
 # create project dir and skip if it exist
 mkdir -p twilux
 cd twilux
