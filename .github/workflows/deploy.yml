@@ -1,0 +1,55 @@
+name: Running Unit Test, Build image & container, Deploy to VPS / Cloud
+
+on:
+  pull_request:
+    branches:
+      - "master"
+  push:
+    branches:
+      - "containerization"
+      - "development"
+
+jobs:
+  unit-test:
+    name: "unit test"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16
+      - name: running unit test
+        run: go test ./... -cover
+
+  build-push-docker:
+    name: "Build docker image and push to dockerhub"
+    runs-on: ubuntu-latest
+    needs: unit-test
+    steps:
+      - uses: actions/checkout@v2
+      - name: build docker
+        run: docker build -t niroin/twilux:1.0.2 .
+      - name: login registry docker hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: push image to registry docker hub
+        run: docker push niroin/twilux:1.0.2
+
+  deploy:
+    name: "SSH access to VPS and run docker to deploy using docker-compose"
+    runs-on: ubuntu-latest
+    needs: build-push-docker
+    steps:
+      - uses: actions/checkout@v2
+      - name: deploy to linode
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.LINODE_HOST }}
+          username: ${{ secrets.LINODE_USERNAME }}
+          # key: ${{ secrets.LINODE_SSHKEY }}
+          password: ${{ secrets.LINODE_PASSWORD }}
+          port: ${{ secrets.LINODE_PORT }}
+          script: rm -f deploy.sh && wget https://github.com/enjinerd/twilux/raw/development/deploy.sh && chmod +x deploy.sh && ./deploy.sh

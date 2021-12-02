@@ -1,0 +1,23 @@
+mode: set
+twilux/business/users/usecase.go:19.129,25.2 1 1
+twilux/business/users/usecase.go:27.87,28.24 1 0
+twilux/business/users/usecase.go:32.2,32.27 1 0
+twilux/business/users/usecase.go:36.2,38.63 2 0
+twilux/business/users/usecase.go:42.2,42.16 1 0
+twilux/business/users/usecase.go:46.2,47.16 2 0
+twilux/business/users/usecase.go:50.2,50.18 1 0
+twilux/business/users/usecase.go:28.24,31.3 2 0
+twilux/business/users/usecase.go:32.27,34.3 1 0
+twilux/business/users/usecase.go:38.63,40.3 1 0
+twilux/business/users/usecase.go:42.16,44.3 1 0
+twilux/business/users/usecase.go:47.16,49.3 1 0
+twilux/business/users/usecase.go:53.80,55.2 1 0
+twilux/business/users/usecase.go:58.90,59.24 1 0
+twilux/business/users/usecase.go:62.2,62.27 1 0
+twilux/business/users/usecase.go:65.2,65.27 1 0
+twilux/business/users/usecase.go:68.2,71.16 3 0
+twilux/business/users/usecase.go:74.2,74.18 1 0
+twilux/business/users/usecase.go:59.24,61.3 1 0
+twilux/business/users/usecase.go:62.27,64.3 1 0
+twilux/business/users/usecase.go:65.27,67.3 1 0
+twilux/business/users/usecase.go:71.16,73.3 1 0
