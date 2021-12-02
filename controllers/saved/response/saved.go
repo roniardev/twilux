@@ -2,14 +2,9 @@ package response
 
 import (
 	"fmt"
-	"time"
 	"twilux/business/saved"
 	resSnip "twilux/controllers/snippets/response"
-)
-
-const (
-	layoutISO = "2006-01-02T15:04:05.999999999Z07:00"
-	layoutUS  = "Monday, January 2, 2006, 03:04:01 PM"
+	format_date "twilux/helpers/date"
 )
 
 type SavedResponse struct {
@@ -21,10 +16,10 @@ type SavedResponse struct {
 }
 
 func FromDomain(domain saved.Domain) SavedResponse {
-	t, _ := time.Parse(layoutISO, domain.CreatedAt.Format(layoutISO))
+	t := format_date.FormatDate(domain.CreatedAt.Format(format_date.LayoutISO))
 
 	return SavedResponse{
-		CreatedAt: t.Format(layoutUS),
+		CreatedAt: t,
 		Id:        domain.Id,
 		SnippetId: domain.SnippetId,
 		Snippet:   resSnip.FromCreateDomain(domain.Snippet),

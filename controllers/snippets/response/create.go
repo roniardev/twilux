@@ -1,13 +1,8 @@
 package response
 
 import (
-	"time"
 	"twilux/business/snippets"
-)
-
-const (
-	layoutISO = "2006-01-02T15:04:05.999999999Z07:00"
-	layoutUS  = "Monday, January 2, 2006, 03:04:01 PM"
+	format_date "twilux/helpers/date"
 )
 
 type SnippetCreateResponse struct {
@@ -20,11 +15,11 @@ type SnippetCreateResponse struct {
 }
 
 func FromCreateDomain(domain snippets.Domain) SnippetCreateResponse {
-	t, _ := time.Parse(layoutISO, domain.CreatedAt.Format(layoutISO))
+	t := format_date.FormatDate(domain.CreatedAt.Format(format_date.LayoutISO))
 
 	return SnippetCreateResponse{
 		Id:        domain.Id,
-		CreatedAt: t.Format(layoutUS),
+		CreatedAt: t,
 		Title:     domain.Title,
 		Snippet:   domain.Snippet,
 		Descb:     domain.Descb,

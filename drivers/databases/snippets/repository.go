@@ -61,13 +61,12 @@ func (repo *SnippetRepository) Create(domain snippets.Domain, ctx context.Contex
 // Update specific snippet by id
 func (repo *SnippetRepository) Update(domain snippets.Domain, ctx context.Context) (snippets.Domain, error) {
 	snippetDb := FromDomain(domain)
-	isEligible := repo.db.Where("user = ? AND id = ?", snippetDb.User, snippetDb.Id).First(&snippetDb, snippetDb)
 
-	if isEligible.Error != nil {
+	res := repo.db.Where("user = ? AND id = ?", snippetDb.User, snippetDb.Id).Updates(&snippetDb)
+	if res.RowsAffected == 0 {
 		return snippets.Domain{}, errors.New("you are not eligible to update this snippet")
 	}
-
-	res := repo.db.Updates(&snippetDb).Select("*")
+	res.Scan(&snippetDb)
 	if res.Error != nil {
 		return snippets.Domain{}, res.Error
 	}

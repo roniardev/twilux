@@ -3,8 +3,10 @@ package business
 import "errors"
 
 var (
-	ErrorInvalidPassword  = errors.New("password cannot be null or empty")
-	ErrorInvalidEmail     = errors.New("email cannot be null or empty")
+	ErrorEmptyPassword    = errors.New("password cannot be null or empty")
+	ErrorInvalidEmail     = errors.New("this is not valid email, please using valid email provider and not using disposal email or spam email")
+	ErrorInvalidPassword  = errors.New("wrong password")
+	ErrorEmptyEmail       = errors.New("email cannot be null or empty")
 	ErrorInvalidUsername  = errors.New("username cannot be null or empty")
 	ErrorDataNotFound     = errors.New("data not found")
 	ErrorInvalidSnippetID = errors.New("invalid snippet id")
