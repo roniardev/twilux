@@ -65,15 +65,18 @@ func (repo *CommentsRepository) Update(domain comments.Domain, ctx context.Conte
 	if res.Error != nil {
 		return comments.Domain{}, res.Error
 	}
-	errs := repo.db.Preload(clause.Associations).Preload("Snippet."+clause.Associations).First(&commentDb, commentDb).Error
-	if errs != nil {
+	res.Scan(&commentDb)
+	preload := repo.db.Preload(clause.Associations).Preload("Snippet."+clause.Associations).First(&commentDb, []string{
+		commentDb.Id,
+	})
+	preload.Scan(&commentDb)
+	if preload.Error != nil {
 		return commentDb.ToDomain(), nil
 	}
 
 	return commentDb.ToDomain(), nil
 }
 
-// Update deleted_at field to specific snippet by id
 func (repo *CommentsRepository) Delete(domain comments.Domain, ctx context.Context) (comments.Domain, error) {
 	commentDb := FromDomain(domain)
 	isEligible := repo.db.Where("user = ? AND snippet_id = ?", commentDb.User, commentDb.SnippetId).First(&commentDb)
