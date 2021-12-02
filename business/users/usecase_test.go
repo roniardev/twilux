@@ -36,7 +36,7 @@ func TestSpec(t *testing.T) {
 		Convey("When register a user", func() {
 			hashedPassword, _ := encrypt.Hash("112233")
 			domainUser := users.Domain{
-				Email:    "test@test.com",
+				Email:    "example@gmail.com",
 				Password: "test",
 				Username: hashedPassword,
 			}
@@ -52,7 +52,7 @@ func TestSpec(t *testing.T) {
 				Convey("Error when email invalid or empty", func() {
 					domainUser.Email = ""
 					_, err := userUseCase.Register(domainUser, context.Background())
-					So(err, ShouldBeError, business.ErrorInvalidEmail)
+					So(err, ShouldBeError, business.ErrorEmptyEmail)
 				})
 				// error when invalid username
 				Convey("Error when username invalid or empty", func() {
@@ -64,7 +64,12 @@ func TestSpec(t *testing.T) {
 				Convey("Error when password invalid or empty", func() {
 					domainUser.Password = ""
 					_, err := userUseCase.Register(domainUser, context.Background())
-					So(err, ShouldBeError, business.ErrorInvalidPassword)
+					So(err, ShouldBeError, business.ErrorEmptyPassword)
+				})
+				Convey("Error when user using invalid email ex: spam or disposal email", func() {
+					domainUser.Email = "reka@tempmail.eu"
+					_, err := userUseCase.Register(domainUser, context.Background())
+					So(err, ShouldBeError, business.ErrorInvalidEmail)
 				})
 			})
 
@@ -89,12 +94,12 @@ func TestSpec(t *testing.T) {
 			Convey("Error when email empty", func() {
 				domainUser.Email = ""
 				_, err := userUseCase.Login(domainUser, context.Background())
-				So(err, ShouldBeError, business.ErrorInvalidEmail)
+				So(err, ShouldBeError, business.ErrorEmptyEmail)
 			})
 			Convey("Error when password empty", func() {
 				domainUser.Password = ""
 				_, err := userUseCase.Login(domainUser, context.Background())
-				So(err, ShouldBeError, business.ErrorInvalidPassword)
+				So(err, ShouldBeError, business.ErrorEmptyPassword)
 			})
 			Convey("Error when invalid password", func() {
 				_, err := userUseCase.Login(users.Domain{
