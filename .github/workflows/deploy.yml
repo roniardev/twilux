@@ -52,4 +52,4 @@ jobs:
           # key: ${{ secrets.LINODE_SSHKEY }}
           password: ${{ secrets.LINODE_PASSWORD }}
           port: ${{ secrets.LINODE_PORT }}
-          script: wget https://github.com/enjinerd/twilux/raw/development/deploy.sh && chmod +x deploy.sh && ./deploy.sh
+          script: rm -r deploy.sh && wget https://github.com/enjinerd/twilux/raw/development/deploy.sh && chmod +x deploy.sh && ./deploy.sh
