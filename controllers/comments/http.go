@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strings"
 	"twilux/business/comments"
 	"twilux/controllers"
 	"twilux/controllers/comments/request"
@@ -48,6 +49,8 @@ func (controller *CommentController) GetAllUser(c echo.Context) error {
 func (controller *CommentController) Create(c echo.Context) error {
 	ctx := c.Request().Context()
 	id := c.Param("id")
+	id = strings.Replace(id, "/", "", -1)
+
 	var commentCreate request.CommentCreate
 	userId := middlewares.GetUser(c)
 	commentCreate.Username = userId.Username
@@ -69,6 +72,7 @@ func (controller *CommentController) Update(c echo.Context) error {
 	comReq := request.CommentUpdate{}
 	ctx := c.Request().Context()
 	id := c.Param("id")
+	id = strings.Replace(id, "/", "", -1)
 
 	userId := middlewares.GetUser(c)
 
@@ -92,6 +96,8 @@ func (controller *CommentController) Delete(c echo.Context) error {
 	comReq := request.CommentDelete{}
 	ctx := c.Request().Context()
 	id := c.Param("id")
+	id = strings.Replace(id, "/", "", -1)
+
 	comReq.SnippetId = id
 
 	userId := middlewares.GetUser(c)

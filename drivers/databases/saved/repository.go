@@ -21,13 +21,7 @@ func NewSavedRepository(db *gorm.DB) *SavedRepository {
 
 func (repo *SavedRepository) GetAll(user string, ctx context.Context) ([]saved.Domain, error) {
 	sav := []Saved{}
-	result := repo.db.Where("user = ?", user).Find(&sav)
-
-	errs := repo.db.Preload(clause.Associations).Preload("Snippet." + clause.Associations).Find(&sav)
-
-	if errs != nil {
-		return ToListDomain(sav), nil
-	}
+	result := repo.db.Preload(clause.Associations).Preload("Snippet."+clause.Associations).Where("user = ?", user).Find(&sav)
 
 	if result.Error != nil {
 		return []saved.Domain{}, result.Error

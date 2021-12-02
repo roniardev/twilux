@@ -3,6 +3,7 @@ package response
 import (
 	"time"
 	"twilux/business/snippets"
+	format_date "twilux/helpers/date"
 )
 
 type SnippetDeleteResponse struct {
@@ -16,11 +17,11 @@ type SnippetDeleteResponse struct {
 
 func FromDeleteDomain(domain snippets.Domain) SnippetDeleteResponse {
 	val, _ := domain.DeletedAt.Value()
-	t, _ := time.Parse(layoutISO, val.(time.Time).Format(layoutISO))
+	t := format_date.FormatDate(val.(time.Time).Format(format_date.LayoutISO))
 
 	return SnippetDeleteResponse{
 		Id:        domain.Id,
-		DeletedAt: t.Format(layoutUS),
+		DeletedAt: t,
 		Title:     domain.Title,
 		Snippet:   domain.Snippet,
 		Descb:     domain.Descb,
